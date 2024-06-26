@@ -39,7 +39,7 @@ resource "aws_security_group" "aurora_sg" {
 }
 
 resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier      = "aurora-cluster-demo-us-east-1-updated"
+  cluster_identifier      = "aurora-cluster-demo-us-east-1-unique"
   engine                  = "aurora-postgresql"
   engine_version          = "11.9"
   master_username         = "auroraadmin"
@@ -55,7 +55,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 
 resource "aws_rds_cluster_instance" "aurora_instance" {
   count              = 2
-  identifier         = "aurora-instance-us-east-1-${count.index}"
+  identifier         = "aurora-instance-us-east-1-unique-${count.index}"
   cluster_identifier = aws_rds_cluster.aurora_cluster.id
   instance_class     = "db.r5.large"
   engine             = aws_rds_cluster.aurora_cluster.engine
@@ -63,7 +63,7 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   publicly_accessible = true
 
   tags = {
-    Name = "aurora-instance-${count.index}"
+    Name = "aurora-instance-unique-${count.index}"
   }
 }
 
