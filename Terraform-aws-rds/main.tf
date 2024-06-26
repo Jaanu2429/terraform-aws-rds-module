@@ -46,7 +46,7 @@ resource "aws_security_group" "aurora_sg" {
 resource "aws_rds_cluster" "aurora_cluster" {
   cluster_identifier      = "aurora-cluster-demo"
   engine                  = "aurora-postgresql"
-  engine_version          = "10.14"
+  engine_version          = "11.9"
   master_username         = "auroraadmin"
   master_password         = var.aurora_admin_password
   db_subnet_group_name    = aws_db_subnet_group.aurora.id
