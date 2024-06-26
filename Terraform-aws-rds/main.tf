@@ -39,7 +39,7 @@ resource "aws_security_group" "aurora_sg" {
 }
 
 resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier      = "aurora-cluster-demo-us-east-1"
+  cluster_identifier      = "aurora-cluster-demo-us-east-1-updated"
   engine                  = "aurora-postgresql"
   engine_version          = "11.9"
   master_username         = "auroraadmin"
