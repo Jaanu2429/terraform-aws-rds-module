@@ -2,7 +2,7 @@ provider "aws" {
   region = var.region
 }
 
-# Retrieve the default VPC
+# Retrieve the default VPC in the specified region
 data "aws_vpc" "default" {
   default = true
 }
@@ -39,7 +39,7 @@ resource "aws_security_group" "aurora_sg" {
 }
 
 resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier      = "aurora-cluster-demo-updated"
+  cluster_identifier      = "aurora-cluster-demo-us-east-1"
   engine                  = "aurora-postgresql"
   engine_version          = "11.9"
   master_username         = "auroraadmin"
@@ -55,7 +55,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 
 resource "aws_rds_cluster_instance" "aurora_instance" {
   count              = 2
-  identifier         = "aurora-instance-updated-${count.index}"
+  identifier         = "aurora-instance-us-east-1-${count.index}"
   cluster_identifier = aws_rds_cluster.aurora_cluster.id
   instance_class     = "db.r5.large"
   engine             = aws_rds_cluster.aurora_cluster.engine
@@ -68,10 +68,10 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
 }
 
 resource "aws_db_subnet_group" "aurora" {
-  name       = "aurora-subnet-group-updated-2"
+  name       = "aurora-subnet-group-us-east-1"
   subnet_ids = data.aws_subnets.default.ids
 
   tags = {
-    Name = "aurora-subnet-group-updated-2"
+    Name = "aurora-subnet-group-us-east-1"
   }
 }
