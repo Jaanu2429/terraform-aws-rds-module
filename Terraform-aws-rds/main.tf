@@ -15,18 +15,7 @@ data "aws_subnets" "default" {
   }
 }
 
-# Use the default subnets for the Aurora subnets
-resource "aws_subnet" "aurora_subnet" {
-  count             = 2
-  vpc_id            = data.aws_vpc.default.id
-  cidr_block        = cidrsubnet(data.aws_vpc.default.cidr_block, 8, count.index)
-  availability_zone = element(data.aws_subnets.default.ids, count.index)
-
-  tags = {
-    Name = "aurora-subnet-${count.index}"
-  }
-}
-
+# Use the existing default subnets
 resource "aws_security_group" "aurora_sg" {
   vpc_id = data.aws_vpc.default.id
 
@@ -78,10 +67,10 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
 }
 
 resource "aws_db_subnet_group" "aurora" {
-  name       = "aurora-subnet-group-updated"
-  subnet_ids = aws_subnet.aurora_subnet[*].id
+  name       = "aurora-subnet-group"
+  subnet_ids = data.aws_subnets.default.ids
 
   tags = {
-    Name = "aurora-subnet-group-updated"
+    Name = "aurora-subnet-group"
   }
 }
