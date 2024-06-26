@@ -2,19 +2,25 @@ provider "aws" {
   region = var.region
 }
 
-resource "aws_vpc" "main" {
-  cidr_block = "10.0.0.0/16"
+# Retrieve the default VPC
+data "aws_vpc" "default" {
+  default = true
+}
 
-  tags = {
-    Name = "main-vpc"
+# Retrieve the default subnets in the default VPC
+data "aws_subnets" "default" {
+  filter {
+    name   = "vpc-id"
+    values = [data.aws_vpc.default.id]
   }
 }
 
+# Use the default subnets for the Aurora subnets
 resource "aws_subnet" "aurora_subnet" {
   count             = 2
-  vpc_id            = aws_vpc.main.id
-  cidr_block        = cidrsubnet(aws_vpc.main.cidr_block, 8, count.index)
-  availability_zone = element(["us-west-2a", "us-west-2b"], count.index)
+  vpc_id            = data.aws_vpc.default.id
+  cidr_block        = cidrsubnet(data.aws_vpc.default.cidr_block, 8, count.index)
+  availability_zone = element(data.aws_subnets.default.ids, count.index)
 
   tags = {
     Name = "aurora-subnet-${count.index}"
@@ -22,7 +28,7 @@ resource "aws_subnet" "aurora_subnet" {
 }
 
 resource "aws_security_group" "aurora_sg" {
-  vpc_id = aws_vpc.main.id
+  vpc_id = data.aws_vpc.default.id
 
   ingress {
     from_port   = 5432
