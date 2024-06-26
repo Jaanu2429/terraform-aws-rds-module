@@ -2,6 +2,19 @@ provider "aws" {
   region = var.region
 }
 
+resource "random_id" "subnet_group" {
+  byte_length = 4
+}
+
+resource "random_id" "cluster" {
+  byte_length = 4
+}
+
+resource "random_id" "instance" {
+  count       = 2
+  byte_length = 4
+}
+
 # Retrieve the default VPC in the specified region
 data "aws_vpc" "default" {
   default = true
@@ -39,7 +52,7 @@ resource "aws_security_group" "aurora_sg" {
 }
 
 resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier      = "aurora-cluster-demo-us-east-1-unique"
+  cluster_identifier      = "aurora-cluster-${random_id.cluster.hex}"
   engine                  = "aurora-postgresql"
   engine_version          = "11.9"
   master_username         = "auroraadmin"
@@ -55,7 +68,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
 
 resource "aws_rds_cluster_instance" "aurora_instance" {
   count              = 2
-  identifier         = "aurora-instance-us-east-1-unique-${count.index}"
+  identifier         = "aurora-instance-${random_id.instance[count.index].hex}"
   cluster_identifier = aws_rds_cluster.aurora_cluster.id
   instance_class     = "db.r5.large"
   engine             = aws_rds_cluster.aurora_cluster.engine
@@ -63,15 +76,15 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   publicly_accessible = true
 
   tags = {
-    Name = "aurora-instance-unique-${count.index}"
+    Name = "aurora-instance-${count.index}"
   }
 }
 
 resource "aws_db_subnet_group" "aurora" {
-  name       = "aurora-subnet-group-us-east-1-unique"
+  name       = "aurora-subnet-group-${random_id.subnet_group.hex}"
   subnet_ids = data.aws_subnets.default.ids
 
   tags = {
-    Name = "aurora-subnet-group-us-east-1-unique"
+    Name = "aurora-subnet-group"
   }
 }
