@@ -72,10 +72,10 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
 }
 
 resource "aws_db_subnet_group" "aurora" {
-  name       = "aurora-subnet-group"
+  name       = "aurora-subnet-group-updated"
   subnet_ids = aws_subnet.aurora_subnet[*].id
 
   tags = {
-    Name = "aurora-subnet-group"
+    Name = "aurora-subnet-group-updated"
   }
 }
