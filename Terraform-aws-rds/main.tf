@@ -47,7 +47,6 @@ resource "aws_rds_cluster" "aurora_cluster" {
   db_subnet_group_name    = aws_db_subnet_group.aurora.id
   vpc_security_group_ids  = [aws_security_group.aurora_sg.id]
   skip_final_snapshot     = true
-  publicly_accessible     = true
 
   tags = {
     Name = "aurora-cluster"
@@ -61,6 +60,7 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   instance_class     = "db.r5.large"
   engine             = aws_rds_cluster.aurora_cluster.engine
   engine_version     = aws_rds_cluster.aurora_cluster.engine_version
+  publicly_accessible = true
 
   tags = {
     Name = "aurora-instance-${count.index}"
