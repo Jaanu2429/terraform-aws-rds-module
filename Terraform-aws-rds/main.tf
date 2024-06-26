@@ -16,24 +16,6 @@ data "aws_subnets" "default" {
 }
 
 # Use the existing default subnets
-
-}
-
-resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier      = "aurora-cluster-demo-updated"
-  engine                  = "aurora-postgresql"
-  engine_version          = "11.9"
-  master_username         = "auroraadmin"
-  master_password         = var.aurora_admin_password
-  db_subnet_group_name    = aws_db_subnet_group.aurora.id
-  vpc_security_group_ids  = [aws_security_group.aurora_sg.id]
-  skip_final_snapshot     = true
-  publicly_accessible     = true
-
-  tags = {
-    Name = "aurora-cluster"
-  }
-}
 resource "aws_security_group" "aurora_sg" {
   vpc_id = data.aws_vpc.default.id
 
@@ -53,6 +35,22 @@ resource "aws_security_group" "aurora_sg" {
 
   tags = {
     Name = "aurora-sg"
+  }
+}
+
+resource "aws_rds_cluster" "aurora_cluster" {
+  cluster_identifier      = "aurora-cluster-demo-updated"
+  engine                  = "aurora-postgresql"
+  engine_version          = "11.9"
+  master_username         = "auroraadmin"
+  master_password         = var.aurora_admin_password
+  db_subnet_group_name    = aws_db_subnet_group.aurora.id
+  vpc_security_group_ids  = [aws_security_group.aurora_sg.id]
+  skip_final_snapshot     = true
+  publicly_accessible     = true
+
+  tags = {
+    Name = "aurora-cluster"
   }
 }
 
