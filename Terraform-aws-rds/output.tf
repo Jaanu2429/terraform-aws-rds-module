@@ -1,7 +1,19 @@
-output "aurora_cluster_endpoint" {
-  value = aws_rds_cluster.aurora_cluster.endpoint
+output "vpc_id" {
+  value = module.vpc.vpc_id
 }
 
-output "aurora_cluster_reader_endpoint" {
-  value = aws_rds_cluster.aurora_cluster.reader_endpoint
+output "subnet_ids" {
+  value = module.vpc.subnet_ids
+}
+
+output "security_group_id" {
+  value = module.security_group.security_group_id
+}
+
+output "rds_endpoint" {
+  value = module.rds.endpoint
+}
+
+output "rds_reader_endpoint" {
+  value = module.rds.reader_endpoint
 }
